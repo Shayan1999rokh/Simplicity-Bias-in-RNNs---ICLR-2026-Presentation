@@ -27,21 +27,34 @@ INSD searches for alternative RNN solutions while preserving task performance.
 
 A reference RNN is first trained using the ordinary task objective:
 
-\[
+$$
 L_{\mathrm{ref}} = L_{\mathrm{task}}
-\]
+$$
 
 Subsequent RNNs are trained with an additional similarity penalty:
 
-\[
+$$
 L_{\mathrm{alt1}}
 =
 L_{\mathrm{task}}
 +
-\lambda S(R_{2\perp},R_{1\perp})
-\]
+\lambda S(R_{2\perp}, R_{1\perp})
+$$
 
-Later alternatives are penalized against all previously discovered solutions.
+Later alternatives are penalized against all previously discovered solutions. For example:
+
+$$
+L_{\mathrm{alt2}}
+=
+L_{\mathrm{task}}
++
+\lambda
+\left[
+S(R_{3\perp}, R_{1\perp})
++
+S(R_{3\perp}, R_{2\perp})
+\right]
+$$
 
 The basic idea is:
 
@@ -51,14 +64,20 @@ The basic idea is:
 
 ## Why the Readout Nullspace?
 
-Neural activity is separated into:
+Neural activity can be separated into:
 
 - **Output-potent activity** — directly contributes to the required task output.
 - **Readout-null activity** — does not directly affect the output.
 
+For nullspace activity,
+
+$$
+J_{\mathrm{out}} r_{\perp}(t) = 0
+$$
+
 Because networks solving the same task must share some output-related structure, INSD applies the similarity penalty only to the **readout nullspace**.
 
-This allows the model to preserve task performance while encouraging alternative internal computations.
+This allows task performance to be preserved while encouraging alternative internal computations.
 
 ---
 
@@ -66,13 +85,31 @@ This allows the model to preserve task performance while encouraging alternative
 
 The method uses **asymmetric linear predictivity**.
 
+Given activity matrices $X$ and $Y$, linear predictivity is defined as
+
+$$
+r^2(X,Y)
+=
+1
+-
+\min_M
+\frac{\lVert XM - Y \rVert^2}
+{\lVert Y \rVert^2}
+$$
+
+where:
+
+- $X$ represents activity from the new or penalized RNN.
+- $Y$ represents activity from the previous or reference RNN.
+- $M$ is the optimal linear mapping.
+
 Training asks whether the activity of an earlier RNN can still be linearly reconstructed from the activity of the newly trained network.
 
 The direction is intentionally:
 
 **new / penalized RNN → previous RNN**
 
-This prevents a trivial solution in which the new network simply retains the old mechanism while adding irrelevant high-dimensional activity.
+This prevents a trivial solution in which the new network retains the old mechanism while simply adding irrelevant high-dimensional activity.
 
 ---
 
@@ -129,4 +166,3 @@ Detailed derivations, supplementary analyses, and the full set of experiments fr
 Qian, W., & Pehlevan, C.  
 **Discovering Alternative Solutions Beyond the Simplicity Bias in Recurrent Neural Networks.**  
 ICLR 2026.
-Presented by SHAYAN ROKHVA
