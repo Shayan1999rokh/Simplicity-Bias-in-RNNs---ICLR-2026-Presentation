@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Cover.png" alt="INSD Presentation Cover" width="100%">
+</p>
+
 # Discovering Alternative Solutions Beyond the Simplicity Bias in Recurrent Neural Networks
 
 This repository contains presentation materials for the ICLR 2026 paper:
