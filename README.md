@@ -19,7 +19,7 @@ Task-trained recurrent neural networks are widely used in computational neurosci
 
 However, independently trained RNNs can converge to effectively the same low-dimensional dynamical solution, even when initialization seeds or gains differ. This phenomenon is referred to as **dynamic collapse**.
 
-The central question is therefore:
+The central question is:
 
 > **Can the same task be solved by fundamentally different recurrent dynamics?**
 
@@ -31,89 +31,60 @@ INSD searches for alternative RNN solutions while preserving task performance.
 
 A reference RNN is first trained using the ordinary task objective:
 
-$$
-L_{\mathrm{ref}} = L_{\mathrm{task}}
-$$
+$$L_{\mathrm{ref}} = L_{\mathrm{task}}$$
 
-Subsequent RNNs are trained with an additional similarity penalty:
+The first alternative RNN is trained with an additional similarity penalty:
 
-$$
-L_{\mathrm{alt1}}
-=
-L_{\mathrm{task}}
-+
-\lambda S(R_{2\perp}, R_{1\perp})
-$$
+$$L_{\mathrm{alt1}} = L_{\mathrm{task}} + \lambda S(R_{2\perp}, R_{1\perp})$$
 
-Later alternatives are penalized against all previously discovered solutions. For example:
+A later alternative is penalized against all previously discovered solutions:
 
-$$
-L_{\mathrm{alt2}}
-=
-L_{\mathrm{task}}
-+
-\lambda
-\left[
-S(R_{3\perp}, R_{1\perp})
-+
-S(R_{3\perp}, R_{2\perp})
-\right]
-$$
+$$L_{\mathrm{alt2}} = L_{\mathrm{task}} + \lambda \left[S(R_{3\perp},R_{1\perp}) + S(R_{3\perp},R_{2\perp})\right]$$
 
-The basic idea is:
+The core idea is:
 
-**same task → different internal dynamics**
+**Same task → different internal dynamics**
 
 ---
 
 ## Why the Readout Nullspace?
 
-Neural activity can be separated into:
+Neural activity can be separated into two components:
 
 - **Output-potent activity** — directly contributes to the required task output.
 - **Readout-null activity** — does not directly affect the output.
 
-For nullspace activity,
+For the readout-null component:
 
-$$
-J_{\mathrm{out}} r_{\perp}(t) = 0
-$$
+$$J_{\mathrm{out}}r_{\perp}(t)=0$$
 
-Because networks solving the same task must share some output-related structure, INSD applies the similarity penalty only to the **readout nullspace**.
+Because networks solving the same task necessarily share some output-related structure, INSD applies its similarity penalty to the **readout nullspace** rather than to the entire neural activity.
 
-This allows task performance to be preserved while encouraging alternative internal computations.
+This preserves task performance while allowing alternative internal dynamics to emerge.
 
 ---
 
 ## Similarity Metric
 
-The method uses **asymmetric linear predictivity**.
+INSD uses **asymmetric linear predictivity**.
 
-Given activity matrices $X$ and $Y$, linear predictivity is defined as
+Given activity matrices $X$ and $Y$:
 
-$$
-r^2(X,Y)
-=
-1
--
-\min_M
-\frac{\lVert XM - Y \rVert^2}
-{\lVert Y \rVert^2}
-$$
+$$r^2(X,Y)=1-\min_M\frac{\left\|XM-Y\right\|^2}{\left\|Y\right\|^2}$$
 
 where:
 
-- $X$ represents activity from the new or penalized RNN.
-- $Y$ represents activity from the previous or reference RNN.
+- $X$ is the activity of the new or penalized RNN.
+- $Y$ is the activity of the previous or reference RNN.
 - $M$ is the optimal linear mapping.
 
-Training asks whether the activity of an earlier RNN can still be linearly reconstructed from the activity of the newly trained network.
+The similarity penalty asks whether the previous solution can still be linearly reconstructed from the new RNN.
 
 The direction is intentionally:
 
-**new / penalized RNN → previous RNN**
+**Penalized RNN → Reference RNN**
 
-This prevents a trivial solution in which the new network retains the old mechanism while simply adding irrelevant high-dimensional activity.
+This prevents a trivial solution in which the new network retains the original mechanism while simply adding irrelevant high-dimensional activity.
 
 ---
 
@@ -137,31 +108,31 @@ Alternative solutions are examined at three levels:
 
 INSD produces RNN solutions that differ substantially from standard task-trained networks.
 
-Examples include:
+Representative findings include:
 
-- slow-point / line-attractor solutions being replaced by **oscillatory dynamics**;
+- slow-point or line-attractor solutions being replaced by **oscillatory dynamics**;
 - persistent memory representations being replaced by **dynamic or rotational codes**;
-- task information remaining available even when its internal representation changes;
-- some alternative solutions showing different robustness profiles under high noise or memory load.
+- task-relevant information remaining available even when its internal representation changes;
+- some alternative solutions exhibiting different robustness profiles under high noise or memory load.
 
-The main conclusion is not that INSD always produces better models, but that it expands the set of **mechanistically distinct hypotheses** available for studying recurrent neural computation.
+The main conclusion is not that INSD always produces better models. Rather, it expands the set of **mechanistically distinct hypotheses** available for studying recurrent neural computation.
 
 ---
 
 ## Presentation Scope
 
-The presentation is designed as a concise, methods-focused overview.
+This presentation provides a concise, methods-focused overview of the paper.
 
 It emphasizes:
 
-1. the simplicity-bias problem,
-2. the INSD training procedure,
-3. readout-nullspace penalization,
-4. asymmetric linear predictivity,
-5. validation of genuinely different dynamical solutions,
+1. the simplicity-bias problem;
+2. the INSD training procedure;
+3. readout-nullspace penalization;
+4. asymmetric linear predictivity;
+5. validation of genuinely different dynamical solutions;
 6. representative experimental results.
 
-Detailed derivations, supplementary analyses, and the full set of experiments from the paper are intentionally omitted.
+Detailed derivations, supplementary analyses, and the complete set of experiments are intentionally omitted.
 
 ---
 
